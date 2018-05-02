@@ -28,6 +28,7 @@ public class gun : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        DisplayAmmoCount();
         if (Input.GetKeyDown(KeyCode.R))
         {
             if (maxAmmo == 0)
@@ -62,6 +63,10 @@ public class gun : MonoBehaviour {
         ammoCountText.text = "Ammo: " + gunAmmo + "/" + maxAmmo;
     }
 
+    public void AddAmmo(int amount)
+    {
+        maxAmmo += amount;
+    }
 
     void Shoot()
     {
@@ -78,15 +83,21 @@ public class gun : MonoBehaviour {
                 //damage the thingy
             }
         }
-        DisplayAmmoCount();
     }
 
     void Reload()
     {
-        maxAmmo -= (15-gunAmmo);
-        gunAmmo = 15;
+        if (maxAmmo >= (15 - gunAmmo))
+        {
+            maxAmmo -= (15 - gunAmmo);
+            gunAmmo = 15;
+        }
+        else
+        {
+            gunAmmo += maxAmmo;
+            maxAmmo = 0;
+        }
         gunReloadSound.Play();
         ammoCountText.color = originalTextColor;
-        DisplayAmmoCount();
     }
 }
