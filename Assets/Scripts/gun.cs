@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class gun : MonoBehaviour {
 
 
-	public float damage = 15f;
+	public int damage = 15;
 	public float distance = 150f;
     public int gunAmmo = 15;
     public int maxAmmo = 15;
@@ -80,7 +80,9 @@ public class gun : MonoBehaviour {
             RaycastHit hit;
             if (Physics.Raycast(fpscam.transform.position, fpscam.transform.forward, out hit, distance, layerMask))
             {
-                //damage the thingy
+                if (hit.collider.gameObject.CompareTag("Enemie")){
+                    hit.collider.GetComponent<EnemieHealth>().TakeDamage(damage);
+                }
             }
         }
     }

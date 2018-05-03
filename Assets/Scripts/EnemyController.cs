@@ -10,6 +10,8 @@ public class EnemyController : MonoBehaviour {
     public Light spotlight;
     public LayerMask viewMask;
     public float Speed;
+    public float attackDistance;
+    public int damage;
 
     private Animator robotAnim;
     private Vector3 lastKnownLocation;
@@ -97,6 +99,11 @@ public class EnemyController : MonoBehaviour {
             }
             else
             {
+                float dist = Vector3.Distance(target.position, transform.position);
+                if (dist <= attackDistance)
+                {
+                    StartCoroutine(MakeDemage(damage));
+                }
                 robotAnim.SetFloat("runSpeed", 1);
                 robotAnim.SetBool("running", true);
                 agent.speed = 4f;
@@ -108,6 +115,12 @@ public class EnemyController : MonoBehaviour {
             }
             
         }
+    }
+
+    IEnumerator MakeDemage(int damage)
+    {
+        target.GetComponent<PlayerHealth>().TakeDamage(damage);
+        yield return new WaitForSeconds(1f);
     }
 
     private void OnDrawGizmos()
@@ -123,6 +136,8 @@ public class EnemyController : MonoBehaviour {
         }
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position, lookDistance);
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, attackDistance);
     }
     
 }
