@@ -9,7 +9,9 @@ public class EnemyController : MonoBehaviour {
     public float waitTime;
     public Light spotlight;
     public LayerMask viewMask;
+    public float Speed;
 
+    private Animator robotAnim;
     private Vector3 lastKnownLocation;
     private bool wasInSight;
     private Transform target;
@@ -20,6 +22,7 @@ public class EnemyController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         wasInSight = false;
+        robotAnim = GetComponentInChildren<Animator>();
         target = GameObject.FindGameObjectWithTag("Player").transform;
         normSpotColor = spotlight.color;
         viewAngle = spotlight.spotAngle;
@@ -80,8 +83,12 @@ public class EnemyController : MonoBehaviour {
                 }
                 spotlight.color = normSpotColor;
                 agent.SetDestination(targetWaypoint);
+                robotAnim.SetFloat("runSpeed", 1);
+                robotAnim.SetBool("running", false);
+                agent.speed = 2f;
                 if ((transform.position.x == targetWaypoint.x) && (transform.position.z == targetWaypoint.z))
                 {
+                    robotAnim.SetFloat("runSpeed", 0);
                     waypointIndex = (waypointIndex + 1) % waypoints.Length;
                     targetWaypoint = waypoints[waypointIndex];
                     yield return new WaitForSeconds(waitTime);
@@ -90,6 +97,9 @@ public class EnemyController : MonoBehaviour {
             }
             else
             {
+                robotAnim.SetFloat("runSpeed", 1);
+                robotAnim.SetBool("running", true);
+                agent.speed = 4f;
                 wasInSight = true;
                 spotlight.color = Color.red;
                 lastKnownLocation = target.position;
